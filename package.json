@@ -4,8 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-      "prestart": "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; nvm use",
-      "start": "node app.js"
+      "start": "nodejs app.js"
   },
   "author": "",
   "license": "ISC",
