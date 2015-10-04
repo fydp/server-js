@@ -1,9 +1,18 @@
 # server-js
 
-## Installation
+## Installation and running
 
-* Install npm (Node package manager)
-* Install nvm @ https://github.com/creationix/nvm (using this to make sure we all run the server on node version 4.1.1)
-* Install node version 4.1.1 via `nvm install 4.1.1`
-* Run `npm install` in root directory
-* To start server, run `npm start`
+* Install Docker
+* Build the image by cd'ing into the root directory (where Dockerfile lives) and
+`sudo docker build -t fydp/server-js .`
+* sudo docker run -p 49160:8080 -d fydp/server-js
+
+## Docker stuff
+
+Check built docker images via `docker images`
+
+Check running docker containers via `docker ps`
+
+Start and stop running docker containers via `start/stop docker [hash]`
+
+Run a shell to the docker container `sudo docker run --rm -it fydp/server-js bash`

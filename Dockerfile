@@ -26,10 +26,9 @@ RUN curl -o- -k https://raw.githubusercontent.com/creationix/nvm/v0.28.0/install
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
 
-ADD . /
-
-RUN npm install
+ADD . /src
+RUN cd /src; npm install
 
 EXPOSE 8080
 
-CMD ["npm", "start"]
+CMD cd /src && npm start
