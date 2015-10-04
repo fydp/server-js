@@ -8,8 +8,9 @@ var io = require('socket.io')(server);
 // you will need to go to http://localhost:8080 to see it
 server.listen(3000);
 
+app.use('/assets', express.static('assets'));
 app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 // Delete this row if you want to see debug messages
