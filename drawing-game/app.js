@@ -30,25 +30,5 @@ io.sockets.on('connection', function (socket) {
 var type = thinky.type;
 var r = thinky.r;
 
-// Create models
+var dbSetup = require('./models')(thinky, type, r);
 
-var Drawing = thinky.createModel('Drawing', {
-    id: type.string(),
-    createdAt: type.date().default(r.now())
-}); 
-
-var Point = thinky.createModel('Point', {
-    id: type.string(),
-    point: type.point(),
-    lineId: type.string(),
-    createdAt: type.date().default(r.now())
-});
-
-var Line = thinky.createModel('Line', {
-    id: type.string(),
-    createdAt: type.date().default(r.now()),
-    drawingId: type.string()
-}); 
-
-Line.hasMany(Point, 'points', 'id', 'lineId');
-Drawing.hasMany(Line, 'lines', 'id', 'drawingId');
