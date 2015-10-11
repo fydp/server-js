@@ -21,3 +21,7 @@ Run a shell to the docker container `sudo docker run --rm -it fydp/server-js bas
 
 https://docs.docker.com/examples/nodejs_web_app/
 http://seanmcgary.com/posts/deploying-a-nodejs-application-using-docker
+
+## RethinkDB
+* To run RethinkDB, run `rethinkdb` which will also allow you to view configuration, database info, etc. from localhost:8080
+* For the drawing app (demo project), run `node app.js` from the drawing-game folder. This will run the webapp in localhost:3000
