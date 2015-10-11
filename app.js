@@ -1,18 +1,28 @@
+// external libraries
 var body_parser  = require('body-parser');
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(8080);
+// user code
+var config = require('./config');
+var db_client = require('./src/db/models');
+
+server.listen(config.port);
 
 app.set('view engine', 'ejs');
-app.use(express.static('.'));
+app.use(express.static('./src/'));
 app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
 
+db_client.init();
+db_client.seed();
+
+app.set('views', __dirname + '/src/views');
+
 app.get('/test', function(request, response) {
-    response.render('test');
+    response.render('test', { port : config.port });
 });
 
 app.get('/', function (req, res) {
@@ -24,6 +34,11 @@ io.set('log level', 1);
 
 // Listen for incoming connections from clients
 io.sockets.on('connection', function (socket) {
+    socket.on('init', function (data) {
+        db_client.get_all_drawings(function (points) {
+            socket.emit('draw_points', points);
+        });
+    });
 
     // Start listening for mouse move events
     socket.on('mousemove', function (data) {

@@ -7,7 +7,7 @@ $(function(){
 	}
 
 	// The URL of your web server (the port is set in app.js)
-	var url = 'http://localhost:3000';
+	var url = 'http://localhost:' + G_PORT;
 
 	var doc = $(document),
 		win = $(window),
@@ -25,6 +25,25 @@ $(function(){
 	var cursors = {};
 
 	var socket = io.connect(url);
+
+    socket.emit('init');
+
+    socket.on('draw_points', function (drawings) {
+        console.log(JSON.stringify(drawings));
+        for (var i = 0; i < drawings.length; i++) {
+            var points = drawings[i].points;
+
+            var prev_x = null;
+            var prev_y = null;
+
+            for (var j = 0; j < points.length; j++) {
+                var point = points[j];
+                if (prev_x != null) drawLine(prev_x, prev_y, point.x, point.y);
+                prev_x = point.x;
+                prev_y = point.y;
+            }
+        }
+    });
 	
 	socket.on('moving', function (data) {
 		
