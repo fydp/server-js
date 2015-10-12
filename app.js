@@ -17,7 +17,6 @@ app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
 
 db_client.init();
-db_client.seed();
 
 app.set('views', __dirname + '/src/views');
 
@@ -35,14 +34,14 @@ io.set('log level', 1);
 // Listen for incoming connections from clients
 io.sockets.on('connection', function (socket) {
     socket.on('init', function (data) {
-        db_client.get_all_drawings(function (points) {
-            socket.emit('draw_points', points);
-        });
+        db_client.get_all_drawings()
+            .then(function (drawings) {
+                socket.emit('draw_points', drawings);
+            });
     });
 
     // Start listening for mouse move events
     socket.on('mousemove', function (data) {
-        
         // This line sends the event (broadcasts it)
         // to everyone except the originating client.
         socket.broadcast.emit('moving', data);
