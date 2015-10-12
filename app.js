@@ -34,7 +34,10 @@ io.set('log level', 1);
 // Listen for incoming connections from clients
 io.sockets.on('connection', function (socket) {
     socket.on('init', function (data) {
-        db_client.get_all_drawings()
+        db_client.get_or_create_user(data.name)
+            .then(function () {
+                return db_client.get_all_drawings();
+            })
             .then(function (drawings) {
                 socket.emit('draw_points', drawings);
             });

@@ -73,8 +73,11 @@ var create_points = function(drawing_id, coord_array) {
     return promise;
 }
 
-var create_user = function (name) {
-    return new User({name : name}).save();
+var get_or_create_user = function (name) {
+    return new User({name : name}).save()
+        .catch(function (err) {
+            return Promise.resolve('duplicate');
+        });
 }
 
 var create_drawing = function (user_id, timestamp, color) {
@@ -102,7 +105,7 @@ module.exports = {
     get_all_users : function() { return get_all(User) },
     get_all_drawings : function() { return get_all(Drawing) },
     get_all_points : function() { return get_all(Point) },
-    create_user : create_user,
+    get_or_create_user : get_or_create_user,
     create_drawing : create_drawing,
     create_point : create_point,
     create_points : create_points,
