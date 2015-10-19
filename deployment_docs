@@ -16,6 +16,14 @@ Problem with running sudo gcloud push
 http://lzone.de/cheat-sheet/kubernetes
     Run kubectl get pods to check status of the deployed application
 
+Redeploying NodeJS App
+======================
+
+docker build -t gcr.io/${PROJECT_ID}/helloworld-node . # build image
+gcloud docker push gcr.io/${PROJECT_ID}/helloworld-node # push image
+kubectl stop rc helloworld-fydp # stop pod
+kubectl run helloworld-fydp --image=gcr.io/${PROJECT_ID}/helloworld-fydp:latest # restart pod
+
 Deploying RethinkDB
 ===================
 
