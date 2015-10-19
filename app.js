@@ -17,6 +17,7 @@ app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
 
 db_client.init();
+db_client.seed();
 
 app.set('views', __dirname + '/src/views');
 

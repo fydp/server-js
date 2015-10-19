@@ -1,4 +1,4 @@
-$(function(){
+$(function() {
 
 	// This demo depends on the canvas element
 	if(!('getContext' in document.createElement('canvas'))){
@@ -9,11 +9,11 @@ $(function(){
 	// The URL of your web server (the port is set in app.js)
 	var url = 'http://localhost:' + G_PORT;
 
-	var doc = $(document),
-		win = $(window),
-		canvas = $('#paper'),
-		ctx = canvas[0].getContext('2d'),
-		instructions = $('#instructions');
+	var doc = $(document);
+	var win = $(window);
+	var canvas = $('#paper');
+	var ctx = canvas[0].getContext('2d');
+    var instructions = $('#instructions');
 	
 	// Generate an unique ID
 	var id = Math.round($.now()*Math.random());
@@ -28,10 +28,10 @@ $(function(){
 
     socket.emit('init');
 
-    socket.on('draw_points', function (drawings) {
-        console.log(JSON.stringify(drawings));
-        for (var i = 0; i < drawings.length; i++) {
-            var points = drawings[i].points;
+    socket.on('draw_points', function (points) {
+        console.log(JSON.stringify(points));
+        for (var i = 0; i < points.length; i++) {
+            var points = points[i].points;
 
             var prev_x = null;
             var prev_y = null;
@@ -47,7 +47,7 @@ $(function(){
 	
 	socket.on('moving', function (data) {
 		
-		if(! (data.id in clients)){
+		if (!(data.id in clients)) {
 			// a new user has come online. create a cursor for them
 			cursors[data.id] = $('<div class="cursor">').appendTo('#cursors');
 		}
@@ -59,7 +59,7 @@ $(function(){
 		});
 		
 		// Is the user drawing?
-		if(data.drawing && clients[data.id]){
+		if (data.drawing && clients[data.id]) {
 			
 			// Draw a line on the canvas. clients[data.id] holds
 			// the previous position of this user's mouse pointer
@@ -74,7 +74,7 @@ $(function(){
 
 	var prev = {};
 	
-	canvas.on('mousedown',function(e){
+	canvas.on('mousedown', function(e) {
 		e.preventDefault();
 		drawing = true;
 		prev.x = e.pageX;
@@ -90,8 +90,8 @@ $(function(){
 
 	var lastEmit = $.now();
 
-	doc.on('mousemove',function(e){
-		if($.now() - lastEmit > 30){
+	doc.on('mousemove',function(e) {
+		if ($.now() - lastEmit > 30) {
 			socket.emit('mousemove',{
 				'x': e.pageX,
 				'y': e.pageY,
@@ -104,8 +104,7 @@ $(function(){
 		// Draw a line for the current user's movement, as it is
 		// not received in the socket.on('moving') event above
 		
-		if(drawing){
-			
+		if (drawing) {
 			drawLine(prev.x, prev.y, e.pageX, e.pageY);
 			
 			prev.x = e.pageX;
@@ -114,9 +113,9 @@ $(function(){
 	});
 
 	// Remove inactive clients after 10 seconds of inactivity
-	setInterval(function(){
+	setInterval(function() {
 		
-		for(ident in clients){
+		for (ident in clients) {
 			if($.now() - clients[ident].updated > 10000){
 				
 				// Last update was more than 10 seconds ago. 
@@ -128,7 +127,7 @@ $(function(){
 			}
 		}
 		
-	},10000);
+	}, 10000);
 
 	function drawLine(fromx, fromy, tox, toy){
 		ctx.moveTo(fromx, fromy);
