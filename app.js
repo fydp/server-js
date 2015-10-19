@@ -42,6 +42,12 @@ io.sockets.on('connection', function (socket) {
         //     })
     });
 
+    socket.on('SEND_POINTS', function (data) {
+        console.log(data);
+        db_client.create_stroke(data.userId, data.drawingId, data.colour, data.points);
+        socket.emit('RECEIVE_POINTS', data);
+    });
+
     // Start listening for mouse move events
     // Used for the drawing game
     socket.on('mousemove', function (data) {
