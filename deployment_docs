@@ -7,8 +7,14 @@ Deploying NodeJS App
 https://cloud.google.com/container-engine/docs/before-you-begin
 https://cloud.google.com/container-engine/docs/tutorials/hello-node
 
+Make sure you expose the right ports for the service:
+    kubectl expose rc helloworld-fydp --create-external-load-balancer=true --port=3000 --target-port=3000
+
 Problem with running sudo gcloud push
     http://nova-aquila.blogspot.ca/2015/07/gcloud-docker-push-tls-error.html
+
+http://lzone.de/cheat-sheet/kubernetes
+    Run kubectl get pods to check status of the deployed application
 
 Deploying RethinkDB
 ===================
