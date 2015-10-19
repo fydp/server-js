@@ -1,0 +1,22 @@
+project-id: helloworld-fydp
+google-compute-instance-id: rethinkdb-fydp
+
+Deploying NodeJS App
+====================
+
+https://cloud.google.com/container-engine/docs/before-you-begin
+https://cloud.google.com/container-engine/docs/tutorials/hello-node
+
+Problem with running sudo gcloud push
+    http://nova-aquila.blogspot.ca/2015/07/gcloud-docker-push-tls-error.html
+
+Deploying RethinkDB
+===================
+
+gcloud config set project <project-id>
+gcloud compute instances create rethinkdb-fydp --image container-vm --zone us-central1-a --machine-type f1-micro
+gcloud compute ssh --zone us-central1-a rethinkdb-fydp
+sudo docker pull rethinkdb
+sudo gcloud compute firewall-rules create rdb-http --allow tcp:8080
+sudo gcloud compute firewall-rules create rdb-client --allow tcp:28015 # not secure at all
+sudo docker run -d -p 8080:8080 -p 28015:28015 -p 29015:29015 rethinkdb
