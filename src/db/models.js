@@ -1,6 +1,15 @@
-var thinky = require('thinky')({
-    db: "fydp"
-});
+var developmentSettings = {
+    db: "test",
+    host: "localhost"
+};
+
+var productionSettings = {
+    db: "test",
+    host: "104.197.0.137",
+    port: 28015
+};
+
+var thinky = require('thinky')(developmentSettings);
 
 var type = thinky.type;
 var r = thinky.r;
@@ -8,34 +17,39 @@ var r = thinky.r;
 // Models
 var User;
 var Drawing;
+var Stroke;
 var Point;
 
 var create_models = function() {
-
     User = thinky.createModel('User', {
+        id: type.string(),
         name: type.string(),
         createdAt: type.date().default(r.now())
-    }, {
-        pk: "name"
     });
-    
-    User.ensureIndex("name");
+
     User.ensureIndex("createdAt"); 
 
     Drawing = thinky.createModel('Drawing', {
         id: type.string(),
-        color: type.string(),
         location: type.string(),
-        userId: type.string(),
         createdAt: type.date().default(r.now())
     }); 
 
     Drawing.ensureIndex("createdAt");
 
-    Point = thinky.createModel('Point', {
+    Stroke = thinky.createModel('Stroke', {
         id: type.string(),
         colour: type.string(),
         drawingId: type.string(),
+        userId: type.string(),
+        createdAt: type.date().default(r.now())
+    });
+
+    Stroke.ensureIndex("createdAt");
+
+    Point = thinky.createModel('Point', {
+        id: type.string(),
+        strokeId: type.string(),
         x: type.number(),
         y: type.number(),
         createdAt: type.date().default(r.now())
@@ -43,46 +57,58 @@ var create_models = function() {
 
     Point.ensureIndex("createdAt");
 
-    Drawing.hasMany(Point, 'points', 'id', 'drawingId');
-    User.hasMany(Drawing, 'drawings', 'name', 'userId');
+    User.hasMany(Stroke, 'strokes', 'id', 'userId');
+    Drawing.hasMany(Stroke, 'strokes', 'id', 'drawingId');
+    Stroke.hasMany(Point, 'points', 'id', 'strokeId');
 };
 
-var seed = function () {
-    new Drawing({color:"#000"}).save()
-        .then(function(result) {
-            return Point.save([{x:5,y:5,color:"#000",drawingId: result.id}, {x:100,y:100,drawingId: result.id}]);
-        })
-        .then(function(result) {
-            console.log(result);
-        });
-}
+var seed = function() {
+    var userId;
 
-var create_point = function(drawing_id, x, y) {
-    return new Point({x:x,y:y,drawingId:drawing_id}).save();
-}
+    new User({name: "TestName"}).save()
+    .then(function(result) {
+        userId = result.id;
+        return new Drawing({location: "test"}).save();
+    })
+    .then(function(result) {
+        return Stroke.save(
+            { colour: "#000", drawingId: result.id, userId: userId }
+        );
+    })
+    .then(function(result) {
+        console.log(result);
+        return Point.save([
+            {x: 3, y: 5, strokeId: result.id },
+            {x: 5, y: 5, strokeId: result.id }
+        ]);
+    });
+};
 
-var create_points = function(drawing_id, coord_array) {
-    promise = Promise.resolve();
-    for (var i = 0; i < coord_array.length; i++) {
-        promise = promise.then((function (index) {
-            return function () {
-                return create_point(drawing_id, coord_array[index].x, coord_array[index].y);
-            }
-        })(i));
-    }
+var create_stroke = function(user_id, drawing_id, colour, coord_array) {
+    return new Stroke({
+        userId : user_id,
+        drawingId : drawing_id,
+        colour: colour
+    }).save()
+    .then(function(result) {
+        var points = [];
+        for (var i = 0; i < coord_array.length; i++) {
+            points.push({colour: colour, strokeId: result.id, x: coord_array[i].x, y: coord_array[i].y});
+        }
+        return Point.save(points);
+    });
     return promise;
 }
 
 var get_or_create_user = function (name) {
     return new User({name : name}).save()
-        .catch(function (err) {
-            return Promise.resolve('duplicate');
-        });
+    .catch(function (err) {
+        return Promise.resolve('duplicate');
+    });
 }
 
-var create_drawing = function (user_id, timestamp, color) {
-    console.log(user_id);
-    return new Drawing({userId:user_id, id:user_id + "-" + timestamp, color: color}).save();
+var create_drawing = function (location) {
+    return new Drawing({location: location}).save();
 }
 
 var get_all = function(Model) {
@@ -91,24 +117,23 @@ var get_all = function(Model) {
 
 var clear_db = function() {
     return get_all(User)
-        .then(function (users) {
-            var promises = [];
-            for (var i = 0; i < users.length; i++) {
-                promises.push(users[i].deleteAll())
-            }
-            return Promise.all(promises);
-        });
+    .then(function (users) {
+        var promises = [];
+        for (var i = 0; i < users.length; i++) {
+            promises.push(users[i].deleteAll())
+        }
+        return Promise.all(promises);
+    });
 }
 
 module.exports = {
-    init : create_models,
-    get_all_users : function() { return get_all(User) },
-    get_all_drawings : function() { return get_all(Drawing) },
-    get_all_points : function() { return get_all(Point) },
-    get_or_create_user : get_or_create_user,
-    create_drawing : create_drawing,
-    create_point : create_point,
-    create_points : create_points,
-    seed : seed,
-    clear_db : clear_db
+    init: create_models,
+    get_all_users: function() { return get_all(User) },
+    get_all_drawings: function() { return get_all(Drawing) },
+    get_all_strokes: function() { return get_all(Stroke) },
+    get_or_create_user: get_or_create_user,
+    create_drawing: create_drawing,
+    create_stroke: create_stroke,
+    seed: seed,
+    clear_db: clear_db
 };
