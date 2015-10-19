@@ -63,25 +63,26 @@ var create_models = function() {
 };
 
 var seed = function() {
-    var userId;
+    new User({name: "Alice"}).save();
+    new User({name: "Bob"}).save();
+    new Drawing({location: "Test!"}).save();
 
-    new User({name: "TestName"}).save()
-    .then(function(result) {
-        userId = result.id;
-        return new Drawing({location: "test"}).save();
-    })
-    .then(function(result) {
-        return Stroke.save(
-            { colour: "#000", drawingId: result.id, userId: userId }
-        );
-    })
-    .then(function(result) {
-        console.log(result);
-        return Point.save([
-            {x: 3, y: 5, strokeId: result.id },
-            {x: 5, y: 5, strokeId: result.id }
-        ]);
-    });
+    // .then(function(result) {
+    //     userId = result.id;
+    //     return new Drawing({location: "test"}).save();
+    // })
+    // .then(function(result) {
+    //     return Stroke.save(
+    //         { colour: "#000", drawingId: result.id, userId: userId }
+    //     );
+    // })
+    // .then(function(result) {
+    //     console.log(result);
+    //     return Point.save([
+    //         {x: 3, y: 5, strokeId: result.id },
+    //         {x: 5, y: 5, strokeId: result.id }
+    //     ]);
+    // });
 };
 
 var create_stroke = function(user_id, drawing_id, colour, coord_array) {
