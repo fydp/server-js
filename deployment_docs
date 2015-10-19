@@ -24,6 +24,8 @@ gcloud docker push gcr.io/${PROJECT_ID}/helloworld-node # push image
 kubectl stop rc helloworld-fydp # stop pod
 kubectl run helloworld-fydp --image=gcr.io/${PROJECT_ID}/helloworld-fydp:latest # restart pod
 
+For some reason, rebuilding and pushing the docker image and then restarting the pod does not cause the pod to actually use the new image. A work around is to just push a renamed image and restart, pointing the pod to the renamed image.
+
 Deploying RethinkDB
 ===================
 
