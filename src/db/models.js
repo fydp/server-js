@@ -9,7 +9,7 @@ var productionSettings = {
     port: 28015
 };
 
-var thinky = require('thinky')(developmentSettings);
+var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : developmentSettings);
 
 var type = thinky.type;
 var r = thinky.r;
