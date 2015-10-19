@@ -35,16 +35,15 @@ io.set('log level', 1);
 // Listen for incoming connections from clients
 io.sockets.on('connection', function (socket) {
     socket.on('init', function (data) {
-        db_client.get_or_create_user(data.name)
-            .then(function () {
-                return db_client.get_all_drawings();
-            })
-            .then(function (drawings) {
-                socket.emit('draw_points', drawings);
-            });
+        // console.log(data.name);
+        // db_client.get_or_create_user(data.name)
+        //     .then(function() {
+        //         db_client.seed();
+        //     })
     });
 
     // Start listening for mouse move events
+    // Used for the drawing game
     socket.on('mousemove', function (data) {
         // This line sends the event (broadcasts it)
         // to everyone except the originating client.

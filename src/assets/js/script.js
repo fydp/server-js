@@ -26,7 +26,7 @@ $(function() {
 
 	var socket = io.connect(url);
 
-    socket.emit('init');
+    socket.emit('init', {name: 'Anojh'});
 
     socket.on('draw_points', function (points) {
         console.log(JSON.stringify(points));
@@ -38,7 +38,9 @@ $(function() {
 
             for (var j = 0; j < points.length; j++) {
                 var point = points[j];
-                if (prev_x != null) drawLine(prev_x, prev_y, point.x, point.y);
+                if (prev_x != null) {
+                    drawLine(prev_x, prev_y, point.x, point.y);
+                }
                 prev_x = point.x;
                 prev_y = point.y;
             }
