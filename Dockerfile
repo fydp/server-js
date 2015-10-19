@@ -29,6 +29,6 @@ ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
 ADD . /src
 RUN cd /src; npm install
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD cd /src && npm start

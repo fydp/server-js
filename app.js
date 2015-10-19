@@ -26,7 +26,7 @@ app.get('/test', function(request, response) {
 });
 
 app.get('/', function (req, res) {
-    res.send('Our FYDP project is the best. yo.');
+    res.send('Our FYDP project is the best. yo. Version 2.');
 });
 
 // Delete this row if you want to see debug messages
