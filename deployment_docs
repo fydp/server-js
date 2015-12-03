@@ -36,3 +36,7 @@ sudo docker pull rethinkdb
 sudo gcloud compute firewall-rules create rdb-http --allow tcp:8080
 sudo gcloud compute firewall-rules create rdb-client --allow tcp:28015 # not secure at all
 sudo docker run -d -p 8080:8080 -p 28015:28015 -p 29015:29015 rethinkdb
+
+To determine the public address: gcloud compute instances list
+
+Note: using sudo might result in a permission error
