@@ -40,7 +40,7 @@ io.sockets.on('connection', function (socket) {
         return_data.drawingId = data.drawingId;
         db_client.get_all_drawings()
             .then(function (result) {
-                socket.broadcast.emit('RECEIVE_ALL_DRAWINGS', result);
+                socket.emit('RECEIVE_ALL_DRAWINGS', result);
             });
     });
 
