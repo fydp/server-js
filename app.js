@@ -40,6 +40,29 @@ io.sockets.on('connection', function (socket) {
         return_data.drawingId = data.drawingId;
         db_client.get_all_drawings()
             .then(function (result) {
+                /*
+                 * result = [ 
+                 *      {
+                 *          location,
+                 *          id,
+                 *          strokes = [
+                 *              {
+                 *                  user_id,
+                 *                  colour,
+                 *                  points = [
+                 *                      {
+                 *                          x,
+                 *                          y
+                 *                      },
+                 *                      ...
+                 *                  ]
+                 *              },
+                 *              ...
+                 *          ]
+                 *      },
+                 *      ...
+                 *  ]
+                 */
                 socket.broadcast.emit('RECEIVE_ALL_DRAWINGS', result);
             });
     });
@@ -49,4 +72,6 @@ io.sockets.on('connection', function (socket) {
         db_client.create_stroke(data.userId, data.drawingId, data.colour, data.points);
         socket.broadcast.emit('RECEIVE_POINTS', data);
     });
+
+    socket.on(''
 });
