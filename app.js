@@ -80,6 +80,4 @@ io.sockets.on('connection', function (socket) {
                 socket.broadcast.emit('CLEAR_DRAWING');
             });
     });
-
-    socket.on(''
 });

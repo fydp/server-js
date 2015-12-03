@@ -5,7 +5,7 @@ var developmentSettings = {
 
 var productionSettings = {
     db: "test",
-    host: "104.197.0.137",
+    host: "104.197.156.4",
     port: 28015
 };
 
