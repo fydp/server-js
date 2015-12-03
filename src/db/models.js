@@ -63,27 +63,51 @@ var create_models = function() {
 };
 
 var seed = function() {
+    var userId;
     new User({name: "Alice"}).save();
-    new User({name: "Bob"}).save();
-    new Drawing({location: "Test!"}).save();
-
-    // .then(function(result) {
-    //     userId = result.id;
-    //     return new Drawing({location: "test"}).save();
-    // })
-    // .then(function(result) {
-    //     return Stroke.save(
-    //         { colour: "#000", drawingId: result.id, userId: userId }
-    //     );
-    // })
-    // .then(function(result) {
-    //     console.log(result);
-    //     return Point.save([
-    //         {x: 3, y: 5, strokeId: result.id },
-    //         {x: 5, y: 5, strokeId: result.id }
-    //     ]);
-    // });
+    new User({name: "Bob"}).save()
+        .then(function (result) {
+            userId = result.id;
+        })
+        .then(function () {
+            return new Drawing({location: "Test!"}).save();
+        })
+        .then(function(result) {
+            return Stroke.save(
+                { colour: "#000", drawingId: result.id, userId: userId }
+            );
+        })
+        .then(function(result) {
+             console.log(result);
+            return Point.save([
+                {x: 3, y: 5, strokeId: result.id },
+                {x: 5, y: 5, strokeId: result.id }
+            ]);
+        });
 };
+
+/*
+ * Get model methods
+ */
+
+var get_or_create_user = function (name) {
+    return new User({name : name}).save()
+    .catch(function (err) {
+        return Promise.resolve('duplicate');
+    });
+}
+
+var get_all = function(Model) {
+    return Model.orderBy({index:"createdAt"}).getJoin().run();
+}
+
+/*
+ * Create model methods
+ */
+
+var create_drawing = function (location) {
+    return new Drawing({location: location}).save();
+}
 
 var create_stroke = function(user_id, drawing_id, colour, coord_array) {
     return new Stroke({
@@ -101,19 +125,23 @@ var create_stroke = function(user_id, drawing_id, colour, coord_array) {
     return promise;
 }
 
-var get_or_create_user = function (name) {
-    return new User({name : name}).save()
-    .catch(function (err) {
-        return Promise.resolve('duplicate');
+/*
+ * Delete model methods
+ */
+
+var clear_drawing = function(drawing_id) {
+    return get_all(Drawing)
+    .then(function (drawings) {
+        var promises = [];
+        for (var i = 0; i < drawings.length; i++) {
+            if (drawing_id == drawings[i].id) promises.push(drawings[i].deleteAll())
+        }
+        return Promise.all(promises);
     });
-}
-
-var create_drawing = function (location) {
-    return new Drawing({location: location}).save();
-}
-
-var get_all = function(Model) {
-    return Model.orderBy({index:"createdAt"}).getJoin().run();
+    // for some reason, cascading delete doesn't work for this...
+    /* return Drawing.get(drawing_id).run().then(function(drawing) {
+            return drawing.deleteAll();
+        }) */
 }
 
 var clear_db = function() {
@@ -136,5 +164,6 @@ module.exports = {
     create_drawing: create_drawing,
     create_stroke: create_stroke,
     seed: seed,
-    clear_db: clear_db
+    clear_db: clear_db,
+    clear_drawing: clear_drawing
 };

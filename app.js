@@ -68,9 +68,17 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('SEND_POINTS', function (data) {
-        console.log(data);
-        db_client.create_stroke(data.userId, data.drawingId, data.colour, data.points);
-        socket.broadcast.emit('RECEIVE_POINTS', data);
+        db_client.create_stroke(data.userId, data.drawingId, data.colour, data.points)
+            .then(function () {
+                socket.boardcast.emit('RECEIVE_POINTS', data);
+            });
+    });
+
+    socket.on('CLEAR_DRAWING', function (data) {
+        db_client.clear_drawing(data.drawingId)
+            .then(function () {
+                socket.broadcast.emit('CLEAR_DRAWING');
+            });
     });
 
     socket.on(''
