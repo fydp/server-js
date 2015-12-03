@@ -17,6 +17,12 @@ Start and stop running docker containers via `start/stop docker [hash]`
 
 Run a shell to the docker container `sudo docker run --rm -it fydp/server-js bash`
 
+Also if you get error message on mac about daemon not running, run the quickstart terminal and run
+```
+docker-machine start default
+eval "$(docker-machine env default)"
+```
+
 ## Relevant links
 
 https://docs.docker.com/examples/nodejs_web_app/
