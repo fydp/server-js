@@ -70,7 +70,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('SEND_POINTS', function (data) {
         db_client.create_stroke(data.userId, data.drawingId, data.colour, data.points)
             .then(function () {
-                socket.boardcast.emit('RECEIVE_POINTS', data);
+                socket.broadcast.emit('RECEIVE_POINTS', data);
             });
     });
 
