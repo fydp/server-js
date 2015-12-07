@@ -9,7 +9,7 @@ var productionSettings = {
     port: 28015
 };
 
-var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : developmentSettings);
+var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : productionSettings);
 
 var type = thinky.type;
 var r = thinky.r;
@@ -129,6 +129,19 @@ var create_stroke = function(user_id, drawing_id, colour, coord_array) {
  * Delete model methods
  */
 
+var clear_strokes = function(drawing_id) {
+    return Drawing.get(drawing_id)
+        .getJoin()
+        .run()
+        .then( function (drawing) {
+            var promises = [];
+            for (var i = 0; i < drawing.strokes.length; i++) {
+                promises.push(drawing.strokes[i].deleteAll());
+            }
+            return Promise.all(promises);
+        }); 
+}
+
 var clear_drawing = function(drawing_id) {
     return get_all(Drawing)
     .then(function (drawings) {
@@ -145,14 +158,22 @@ var clear_drawing = function(drawing_id) {
 }
 
 var clear_db = function() {
-    return get_all(User)
-    .then(function (users) {
-        var promises = [];
-        for (var i = 0; i < users.length; i++) {
-            promises.push(users[i].deleteAll())
-        }
-        return Promise.all(promises);
-    });
+    var overall_promises = [];
+    overall_promises.push(get_all(User)
+            .then(function (users) {
+                for (var i = 0; i < users.length; i++) {
+                    promises.push(users[i].deleteAll());
+                }
+                return Promise.all(promises);
+            });
+    overall_promises.push(get_all(Drawing)
+            .then(function (drawings) {
+                for (var i = 0; i < drawings.length; i++) {
+                    promises.push(drawings[i].deleteAll());
+                }
+                return Promise.all(promises);
+            });
+    return Promise.all(overall_promises);
 }
 
 module.exports = {
@@ -160,10 +181,12 @@ module.exports = {
     get_all_users: function() { return get_all(User) },
     get_all_drawings: function() { return get_all(Drawing) },
     get_all_strokes: function() { return get_all(Stroke) },
+    get_all_points: function () { return get_all(Point) },
     get_or_create_user: get_or_create_user,
     create_drawing: create_drawing,
     create_stroke: create_stroke,
     seed: seed,
     clear_db: clear_db,
-    clear_drawing: clear_drawing
+    clear_drawing: clear_drawing,
+    clear_strokes : clear_strokes 
 };
