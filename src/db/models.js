@@ -9,6 +9,8 @@ var productionSettings = {
     port: 28015
 };
 
+
+var Promise = require('bluebird');
 var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : productionSettings);
 
 var type = thinky.type;
