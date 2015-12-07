@@ -165,14 +165,14 @@ var clear_db = function() {
                     promises.push(users[i].deleteAll());
                 }
                 return Promise.all(promises);
-            });
+            }));
     overall_promises.push(get_all(Drawing)
             .then(function (drawings) {
                 for (var i = 0; i < drawings.length; i++) {
                     promises.push(drawings[i].deleteAll());
                 }
                 return Promise.all(promises);
-            });
+            }));
     return Promise.all(overall_promises);
 }
 
