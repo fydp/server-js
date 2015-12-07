@@ -11,7 +11,7 @@ var productionSettings = {
 
 
 var Promise = require('bluebird');
-var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : productionSettings);
+var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : developmentSettings);
 
 var type = thinky.type;
 var r = thinky.r;
