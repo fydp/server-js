@@ -17,7 +17,7 @@ app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
 
 db_client.init();
-db_client.seed();
+// db_client.seed();
 
 app.set('views', __dirname + '/src/views');
 
@@ -80,7 +80,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('CLEAR_DRAWING', function (data) {
         console.log("Receives clear drawing from client");
-        db_client.clear_drawing(data.drawingId)
+        db_client.clear_strokes(data.drawingId)
             .then(function () {
                 console.log("Confirm clear drawing from client");
                 socket.broadcast.emit('CLEAR_DRAWING');

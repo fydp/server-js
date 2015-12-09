@@ -163,6 +163,7 @@ var clear_db = function() {
     var overall_promises = [];
     overall_promises.push(get_all(User)
             .then(function (users) {
+                var promises = [];
                 for (var i = 0; i < users.length; i++) {
                     promises.push(users[i].deleteAll());
                 }
@@ -170,6 +171,7 @@ var clear_db = function() {
             }));
     overall_promises.push(get_all(Drawing)
             .then(function (drawings) {
+                var promises = [];
                 for (var i = 0; i < drawings.length; i++) {
                     promises.push(drawings[i].deleteAll());
                 }
