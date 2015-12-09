@@ -11,7 +11,7 @@ var productionSettings = {
 
 
 var Promise = require('bluebird');
-var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : developmentSettings);
+var thinky = require('thinky')(process.env.NODE_ENV === 'production' ? productionSettings : productionSettings);
 
 var type = thinky.type;
 var r = thinky.r;
@@ -144,6 +144,17 @@ var clear_strokes = function(drawing_id) {
         }); 
 }
 
+var clear_all_strokes = function() {
+    return get_all(Stroke)
+            .then(function (strokes) {
+                var promises = [];
+                for (var i = 0; i < strokes.length; i++) {
+                    promises.push(strokes[i].deleteAll());
+                }
+                return Promise.all(promises);
+            });
+}
+
 var clear_drawing = function(drawing_id) {
     return get_all(Drawing)
     .then(function (drawings) {
@@ -163,6 +174,7 @@ var clear_db = function() {
     var overall_promises = [];
     overall_promises.push(get_all(User)
             .then(function (users) {
+                var promises = [];
                 for (var i = 0; i < users.length; i++) {
                     promises.push(users[i].deleteAll());
                 }
@@ -170,6 +182,7 @@ var clear_db = function() {
             }));
     overall_promises.push(get_all(Drawing)
             .then(function (drawings) {
+                var promises = [];
                 for (var i = 0; i < drawings.length; i++) {
                     promises.push(drawings[i].deleteAll());
                 }
@@ -190,5 +203,6 @@ module.exports = {
     seed: seed,
     clear_db: clear_db,
     clear_drawing: clear_drawing,
-    clear_strokes : clear_strokes 
+    clear_strokes : clear_strokes,
+    clear_all_strokes : clear_all_strokes 
 };
