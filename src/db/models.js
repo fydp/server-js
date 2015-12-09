@@ -54,6 +54,7 @@ var create_models = function() {
         strokeId: type.string(),
         x: type.number(),
         y: type.number(),
+        index: type.number(),
         createdAt: type.date().default(r.now())
     });
 
@@ -120,7 +121,7 @@ var create_stroke = function(user_id, drawing_id, colour, coord_array) {
     .then(function(result) {
         var points = [];
         for (var i = 0; i < coord_array.length; i++) {
-            points.push({colour: colour, strokeId: result.id, x: coord_array[i].x, y: coord_array[i].y});
+            points.push({colour: colour, strokeId: result.id, x: coord_array[i].x, y: coord_array[i].y, index: i});
         }
         return Point.save(points);
     });
